@@ -13,11 +13,12 @@ func computeIntcode(input []int) ([]int, error) {
 		case 2:
 			input[input[i+3]] = input[input[i+1]] * input[input[i+2]]
 		case 99:
-			break
+			return input, nil
 		default:
-			return nil, errors.New(fmt.Sprintf("Unknown opcode %d", input[i]))
+			return nil, errors.New(fmt.Sprintf("Unknown opcode %d on position %d", input[i], i))
 		}
 	}
 
-	return input, nil
+	return nil, errors.New("Oops, it seems that something went wrong")
+
 }
