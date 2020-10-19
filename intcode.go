@@ -38,14 +38,13 @@ func computeIntcode(input []int) ([]int, error) {
 func extractInstructionData(instruction int) (int, int, int, int) {
 	instructions := strconv.Itoa(instruction)
 
-	var opcode int
-	mode1, mode2, mode3 := 0, 0, 0
-	if len(instructions) > 2 {
-		mode1, mode2, mode3 = extractModes(instructions[0 : len(instructions)-2])
-		opcode, _ = strconv.Atoi(instructions[len(instructions)-2:])
-	} else {
-		opcode, _ = strconv.Atoi(instructions)
+	if len(instructions) <= 2 {
+		opcode, _ := strconv.Atoi(instructions)
+		return opcode, 0, 0, 0
 	}
+
+	mode1, mode2, mode3 := extractModes(instructions[0 : len(instructions)-2])
+	opcode, _ := strconv.Atoi(instructions[len(instructions)-2:])
 
 	return opcode, mode1, mode2, mode3
 }
