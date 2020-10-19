@@ -43,29 +43,35 @@ func computeIntcode(input []int) ([]int, error) {
 }
 
 func extractInstructionData(input int) Instruction {
-	instruction := strconv.Itoa(input)
+	inst := strconv.Itoa(input)
 
-	if len(instruction) <= 2 {
-		opcode, _ := strconv.Atoi(instruction)
-		return Instruction{opcode: opcode}
+	if len(inst) <= 2 {
+		return Instruction{opcode: stringToInt(inst)}
 	}
 
-	mode1, mode2, mode3 := extractModes(instruction[0 : len(instruction)-2])
-	opcode, _ := strconv.Atoi(instruction[len(instruction)-2:])
+	opcode := stringToInt(inst[len(inst)-2:])
+	modes := inst[0 : len(inst)-2]
+	modeParam1 := stringToInt(modes[len(modes)-1 : len(modes)])
 
-	return Instruction{opcode, mode1, mode2, mode3}
-}
+	instruction := Instruction{opcode: opcode, modeParam1: modeParam1}
 
-func extractModes(modes string) (int, int, int) {
-	modeParam1, _ := strconv.Atoi(modes[len(modes)-1 : len(modes)])
-	modeParam2 := 0
-	modeParam3 := 0
 	if len(modes) >= 2 {
-		modeParam2, _ = strconv.Atoi(modes[len(modes)-2 : len(modes)-1])
+		instruction.modeParam2 = stringToInt(modes[len(modes)-2 : len(modes)-1])
 	}
 	if len(modes) >= 3 {
-		modeParam3, _ = strconv.Atoi(modes[len(modes)-3 : len(modes)-2])
+		instruction.modeParam3 = stringToInt(modes[len(modes)-3 : len(modes)-2])
 	}
 
-	return modeParam1, modeParam2, modeParam3
+	return instruction
+}
+
+func stringToInt(input string) int {
+	result, err := strconv.Atoi(input)
+
+	if err != nil {
+		// TODO do something more clever
+		panic(err)
+	}
+
+	return result
 }
