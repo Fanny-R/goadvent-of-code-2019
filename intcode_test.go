@@ -31,3 +31,38 @@ func TestComputeIntcode(t *testing.T) {
 		}
 	}
 }
+
+var instructionextractiontests = []struct {
+	instruction int
+	opcode      int
+	mode1       int
+	mode2       int
+	mode3       int
+}{
+	{99, 99, 0, 0, 0},
+	{2, 2, 0, 0, 0},
+	{1002, 2, 0, 1, 0},
+	{11102, 2, 1, 1, 1},
+	{10002, 2, 0, 0, 1},
+	{102, 2, 1, 0, 0},
+}
+
+func TestExtractInstructionData(t *testing.T) {
+	for _, tt := range instructionextractiontests {
+		// TODO return an object instead of that mess
+		opcode, mode1, mode2, mode3 := extractInstructionData(tt.instruction)
+
+		if tt.opcode != opcode {
+			t.Errorf("Wrong opcode : got %d, want %d", opcode, tt.opcode)
+		}
+		if tt.mode1 != mode1 {
+			t.Errorf("Wrong mode1 : got %d, want %d", mode1, tt.mode1)
+		}
+		if tt.mode2 != mode2 {
+			t.Errorf("Wrong mode2 : got %d, want %d", mode2, tt.mode2)
+		}
+		if tt.mode3 != mode3 {
+			t.Errorf("Wrong mode3 : got %d, want %d", mode3, tt.mode3)
+		}
+	}
+}

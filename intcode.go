@@ -3,11 +3,13 @@ package main
 import (
 	"errors"
 	"fmt"
+	"strconv"
 )
 
 func computeIntcode(input []int) ([]int, error) {
 	for i := 0; i < len(input); {
-		switch input[i] {
+		opcode, _, _, _ := extractInstructionData(input[i])
+		switch opcode {
 		case 1:
 			input[input[i+3]] = input[input[i+1]] + input[input[i+2]]
 			i += 4
@@ -31,5 +33,33 @@ func computeIntcode(input []int) ([]int, error) {
 	}
 
 	return nil, errors.New("Oops, it seems that something went wrong")
+}
 
+func extractInstructionData(instruction int) (int, int, int, int) {
+	instructions := strconv.Itoa(instruction)
+
+	var opcode int
+	mode1, mode2, mode3 := 0, 0, 0
+	if len(instructions) > 2 {
+		mode1, mode2, mode3 = extractModes(instructions[0 : len(instructions)-2])
+		opcode, _ = strconv.Atoi(instructions[len(instructions)-2:])
+	} else {
+		opcode, _ = strconv.Atoi(instructions)
+	}
+
+	return opcode, mode1, mode2, mode3
+}
+
+func extractModes(modes string) (int, int, int) {
+	modeParam1, _ := strconv.Atoi(modes[len(modes)-1 : len(modes)])
+	modeParam2 := 0
+	modeParam3 := 0
+	if len(modes) >= 2 {
+		modeParam2, _ = strconv.Atoi(modes[len(modes)-2 : len(modes)-1])
+	}
+	if len(modes) >= 3 {
+		modeParam3, _ = strconv.Atoi(modes[len(modes)-3 : len(modes)-2])
+	}
+
+	return modeParam1, modeParam2, modeParam3
 }
