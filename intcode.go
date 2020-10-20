@@ -13,29 +13,43 @@ type Instruction struct {
 	modeParam3 int
 }
 
+var intcode []int
+var i int
+
 func computeIntcode(input []int) ([]int, error) {
-	for i := 0; i < len(input); {
-		instruction := extractInstructionData(input[i])
+	intcode = input
+	i = 0
+
+	for i < len(intcode) {
+		instruction := extractInstructionData(intcode[i])
 		switch instruction.opcode {
 		case 1:
-			input[input[i+3]] = input[input[i+1]] + input[input[i+2]]
+			value1, value2 := getValuesFromParamsMode(instruction.modeParam1, instruction.modeParam2)
+			intcode[intcode[i+3]] = value1 + value2
 			i += 4
 		case 2:
-			input[input[i+3]] = input[input[i+1]] * input[input[i+2]]
+			value1, value2 := getValuesFromParamsMode(instruction.modeParam1, instruction.modeParam2)
+			intcode[intcode[i+3]] = value1 * value2
 			i += 4
 		case 3:
 			var first int
-			fmt.Print("Input: ")
+			fmt.Print("intcode: ")
 			fmt.Scanln(&first)
-			input[input[i+1]] = first
+			intcode[intcode[i+1]] = first
 			i += 2
 		case 4:
-			fmt.Println(fmt.Sprintf("Output: %d", input[input[i+1]]))
+			// output
+			value1 := intcode[i+1]
+			if instruction.modeParam1 == 0 {
+				value1 = intcode[value1]
+			}
+
+			fmt.Println(fmt.Sprintf("Output: %d", value1))
 			i += 2
 		case 99:
-			return input, nil
+			return intcode, nil
 		default:
-			return nil, errors.New(fmt.Sprintf("Unknown opcode %d on position %d", input[i], i))
+			return nil, errors.New(fmt.Sprintf("Unknown opcode %d on position %d", intcode[i], i))
 		}
 	}
 
@@ -74,4 +88,18 @@ func stringToInt(input string) int {
 	}
 
 	return result
+}
+
+func getValuesFromParamsMode(modeParam1, modeParam2 int) (int, int) {
+	value1 := intcode[i+1]
+	if modeParam1 == 0 {
+		value1 = intcode[value1]
+	}
+
+	value2 := intcode[i+2]
+	if modeParam2 == 0 {
+		value2 = intcode[value2]
+	}
+
+	return value1, value2
 }

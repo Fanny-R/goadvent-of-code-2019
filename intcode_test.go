@@ -24,7 +24,7 @@ func TestComputeIntcode(t *testing.T) {
 		output, err := computeIntcode(tt.in)
 
 		if !reflect.DeepEqual(output, tt.out) {
-			t.Errorf("got %q, want %q", output, tt.out)
+			t.Errorf("got %d, want %d", output, tt.out)
 		}
 		if err != nil && err.Error() != tt.err.Error() {
 			t.Errorf("got %q, want %q", err, tt.err)
