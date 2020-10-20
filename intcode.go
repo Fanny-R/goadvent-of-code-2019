@@ -15,10 +15,12 @@ type Instruction struct {
 
 var intcode []int
 var i int
+var relativeBase int
 
 func computeIntcode(input []int) ([]int, error) {
 	intcode = input
 	i = 0
+	relativeBase = 0
 
 	for i < len(intcode) {
 		instruction := extractInstructionData(intcode[i])
@@ -83,6 +85,10 @@ func computeIntcode(input []int) ([]int, error) {
 				intcode[intcode[i+3]] = 0
 			}
 			i += 4
+		case 9:
+			// adjusts the relative base
+			relativeBase += instruction.modeParam1
+			i += 2
 		case 99:
 			return intcode, nil
 		default:
@@ -131,11 +137,15 @@ func getValuesFromParamsMode(modeParam1, modeParam2 int) (int, int) {
 	value1 := intcode[i+1]
 	if modeParam1 == 0 {
 		value1 = intcode[value1]
+	} else if modeParam1 == 2 {
+		value1 = intcode[relativeBase+value1]
 	}
 
 	value2 := intcode[i+2]
 	if modeParam2 == 0 {
 		value2 = intcode[value2]
+	} else if modeParam2 == 2 {
+		value1 = intcode[relativeBase+value2]
 	}
 
 	return value1, value2
