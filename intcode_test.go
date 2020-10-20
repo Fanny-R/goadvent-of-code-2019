@@ -17,6 +17,10 @@ var intcodetests = []struct {
 	{[]int{1, 1, 1, 4, 99, 5, 6, 0, 99}, []int{30, 1, 1, 4, 2, 5, 6, 0, 99}, nil},
 	{[]int{1, 9, 10, 3, 2, 3, 11, 0, 99, 30, 40, 50}, []int{3500, 9, 10, 70, 2, 3, 11, 0, 99, 30, 40, 50}, nil},
 	{[]int{0, 0, 0, 0, 99}, nil, errors.New("Unknown opcode 0 on position 0")},
+	{[]int{8, 4, 4, 5, 99, 894}, []int{8, 4, 4, 5, 99, 1}, nil},
+	{[]int{8, 4, 3, 5, 99, 87}, []int{8, 4, 3, 5, 99, 0}, nil},
+	{[]int{7, 4, 4, 5, 99, 69}, []int{7, 4, 4, 5, 99, 0}, nil},
+	{[]int{7, 2, 4, 5, 99, 78}, []int{7, 2, 4, 5, 99, 1}, nil},
 }
 
 func TestComputeIntcode(t *testing.T) {

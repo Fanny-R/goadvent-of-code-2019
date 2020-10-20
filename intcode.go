@@ -24,14 +24,17 @@ func computeIntcode(input []int) ([]int, error) {
 		instruction := extractInstructionData(intcode[i])
 		switch instruction.opcode {
 		case 1:
+			// add
 			value1, value2 := getValuesFromParamsMode(instruction.modeParam1, instruction.modeParam2)
 			intcode[intcode[i+3]] = value1 + value2
 			i += 4
 		case 2:
+			// multiply
 			value1, value2 := getValuesFromParamsMode(instruction.modeParam1, instruction.modeParam2)
 			intcode[intcode[i+3]] = value1 * value2
 			i += 4
 		case 3:
+			// intput
 			var first int
 			fmt.Print("intcode: ")
 			fmt.Scanln(&first)
@@ -46,6 +49,40 @@ func computeIntcode(input []int) ([]int, error) {
 
 			fmt.Println(fmt.Sprintf("Output: %d", value1))
 			i += 2
+		case 5:
+			// jump if true
+			value1, value2 := getValuesFromParamsMode(instruction.modeParam1, instruction.modeParam2)
+			if value1 != 0 {
+				i = value2
+			} else {
+				i += 3
+			}
+		case 6:
+			// jump if false
+			value1, value2 := getValuesFromParamsMode(instruction.modeParam1, instruction.modeParam2)
+			if value1 == 0 {
+				i = value2
+			} else {
+				i += 3
+			}
+		case 7:
+			// less than
+			value1, value2 := getValuesFromParamsMode(instruction.modeParam1, instruction.modeParam2)
+			if value1 < value2 {
+				intcode[intcode[i+3]] = 1
+			} else {
+				intcode[intcode[i+3]] = 0
+			}
+			i += 4
+		case 8:
+			// equals
+			value1, value2 := getValuesFromParamsMode(instruction.modeParam1, instruction.modeParam2)
+			if value1 == value2 {
+				intcode[intcode[i+3]] = 1
+			} else {
+				intcode[intcode[i+3]] = 0
+			}
+			i += 4
 		case 99:
 			return intcode, nil
 		default:
